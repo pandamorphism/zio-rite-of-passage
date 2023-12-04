@@ -10,7 +10,8 @@ import sttp.tapir.server.ziohttp.{ZioHttpInterpreter, ZioHttpServerOptions}
 import com.rockthejvm.reviewboard.http.controllers.HealthController
 import com.rockthejvm.reviewboard.http.controllers.CompanyController
 import com.rockthejvm.reviewboard.http.HttpAPI
-import com.rockthejvm.reviewboard.services.CompanyService
+import com.rockthejvm.reviewboard.services.*
+import com.rockthejvm.reviewboard.repositories.*
 
 object Application extends ZIOAppDefault:
 
@@ -28,5 +29,10 @@ object Application extends ZIOAppDefault:
     .flatMap(_ => Console.printLine("Rock the JVM Review Board is running..."))
     .provide(
       Server.default,
-      CompanyService.dummyLayer
+      // services
+      CompanyServiceLive.layer,
+      // repos
+      CompanyRepositoryLive.layer,
+      // data layer
+      Repository.dataLayer
     )

@@ -72,13 +72,10 @@ object CompanyRepositoryLive:
 
 object CompanyRepositoryDemo extends ZIOAppDefault:
   val program = for
-    repo    <- ZIO.service[CompanyRepository]
-    created <-
-      repo.create(
-        Company(id = -1, name = "Rock the JVM", url = "rockthejvm.com", slug = "rock-the-jvm")
-      )
-  yield created
- 
+    repo      <- ZIO.service[CompanyRepository]
+    companies <- repo.getAll
+  yield companies
+
   override def run: ZIO[Any & (ZIOAppArgs & Scope), Any, Any] = program.debug.provide(
     CompanyRepositoryLive.layer,
     Quill.Postgres.fromNamingStrategy(SnakeCase),
