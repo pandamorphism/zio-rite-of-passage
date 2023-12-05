@@ -69,15 +69,3 @@ object CompanyRepositoryLive:
   val layer = ZLayer {
     ZIO.service[Quill.Postgres[SnakeCase]].map(new CompanyRepositoryLive(_))
   }
-
-object CompanyRepositoryDemo extends ZIOAppDefault:
-  val program = for
-    repo      <- ZIO.service[CompanyRepository]
-    companies <- repo.getAll
-  yield companies
-
-  override def run: ZIO[Any & (ZIOAppArgs & Scope), Any, Any] = program.debug.provide(
-    CompanyRepositoryLive.layer,
-    Quill.Postgres.fromNamingStrategy(SnakeCase),
-    Quill.DataSource.fromPrefix("rockthejvm.db")
-  )
